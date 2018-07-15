@@ -138,3 +138,10 @@ func TestLoadFromEnvironment(t *testing.T) {
         t.Errorf("failed to load services from environment")
     }
 }
+
+func TestLoadFromEnvironmentWhenNotSet(t *testing.T) {
+    vcapServices := LoadFromEnvironment()
+    if len(vcapServices) != 0 {
+        t.Errorf("failed to load services from environment")
+    }
+}
