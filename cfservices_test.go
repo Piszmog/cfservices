@@ -5,14 +5,6 @@ import (
     "os"
 )
 
-type MLab struct {
-    Credentials Credentials `json:"credentials"`
-}
-
-type Credentials struct {
-    Uri string `json:"uri"`
-}
-
 func TestGetUriCredentials(t *testing.T) {
     const services = `{
       "serviceA": [
