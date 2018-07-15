@@ -9,10 +9,12 @@ import (
 
 const VCAPServices = "VCAP_SERVICES"
 
+// Retrieves the JSON from the environment variables 'VCAP_SERVICES'
 func LoadFromEnvironment() string {
     return os.Getenv(VCAPServices)
 }
 
+// Retrieves from credentials for the provided service from the 'VCAP_SERVICES' JSON
 func GetServiceCredentials(serviceName string, services string) (*credentials.Credentials, error) {
     servicesJson := make(map[string][]map[string]credentials.Credentials)
     err := json.Unmarshal([]byte(services), &servicesJson)
