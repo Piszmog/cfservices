@@ -1,7 +1,7 @@
 package cfservices
 
 import (
-    "github.com/Piszmog/cf-services/credentials"
+    "github.com/Piszmog/cfservices/credentials"
     "encoding/json"
     "github.com/pkg/errors"
     "os"
