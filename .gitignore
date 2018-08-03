@@ -20,3 +20,4 @@
 *.ipr
 
 /vendor
+go.sum
