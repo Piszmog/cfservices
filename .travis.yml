@@ -1,8 +1,8 @@
 language: go
 
 go:
-- "1.10"
-- develop
+- "1.10."
+- master
 
 notifications:
   email:
