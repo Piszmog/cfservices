@@ -19,8 +19,38 @@ func TestGetUriCredentials(t *testing.T) {
 	if err != nil || credentials == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
-	if credentials.Uri != "example_uri" {
+	if credentials.Credentials[0].Uri != "example_uri" {
 		t.Errorf("retrived uri does not match %v", "example_uri")
+	}
+}
+
+func TestGetUriCredentialsFromMultipleServices(t *testing.T) {
+	const services = `{
+      "serviceA": [
+        {
+          "credentials": {
+            "uri": "example_uri"
+          }
+        },
+        {
+          "credentials": {
+            "uri": "example_uri"
+          }
+        }
+      ]
+    }`
+	serviceCred, err := GetServiceCredentials("serviceA", services)
+	if err != nil || serviceCred == nil {
+		t.Errorf("failed to get credentials. %v", err)
+	}
+	creds := serviceCred.Credentials
+	if len(creds) != 2 {
+		t.Errorf("service does not contain both credentials")
+	}
+	for _, cred := range creds {
+		if cred.Uri != "example_uri" {
+			t.Errorf("retrived uri does not match %v", "example_uri")
+		}
 	}
 }
 
@@ -86,39 +116,41 @@ func TestGetFullCredentials(t *testing.T) {
         }
       ]
     }`
-	credentials, err := GetServiceCredentials("serviceA", services)
-	if err != nil || credentials == nil {
+	serviceCreds, err := GetServiceCredentials("serviceA", services)
+	if err != nil || serviceCreds == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
-	if credentials.Uri != "example_uri" {
-		t.Errorf("retrived uri does not match %v", "example_uri")
-	}
-	if credentials.APIUri != "example_httpAPIUri" {
-		t.Errorf("retrived http api uri does not match %v", "example_httpAPIUri")
-	}
-	if credentials.LicenceKey != "example_licenseKey" {
-		t.Errorf("retrived license ket does not match %v", "example_licenseKey")
-	}
-	if credentials.ClientSecret != "example_clientSecret" {
-		t.Errorf("retrived client secret does not match %v", "example_clientSecret")
-	}
-	if credentials.ClientId != "example_clientId" {
-		t.Errorf("retrived client id does not match %v", "example_clientId")
-	}
-	if credentials.AccessTokenUri != "example_accessTokenUri" {
-		t.Errorf("retrived access token uri does not match %v", "example_accessTokenUri")
-	}
-	if credentials.Hostname != "example_hostname" {
-		t.Errorf("retrived hostname does not match %v", "example_hostname")
-	}
-	if credentials.Username != "example_username" {
-		t.Errorf("retrived username does not match %v", "example_username")
-	}
-	if credentials.Password != "example_password" {
-		t.Errorf("retrived password does not match %v", "example_password")
-	}
-	if credentials.Port != "example_port" {
-		t.Errorf("retrived port does not match %v", "example_port")
+	for _, credentials := range serviceCreds.Credentials {
+		if credentials.Uri != "example_uri" {
+			t.Errorf("retrived uri does not match %v", "example_uri")
+		}
+		if credentials.APIUri != "example_httpAPIUri" {
+			t.Errorf("retrived http api uri does not match %v", "example_httpAPIUri")
+		}
+		if credentials.LicenceKey != "example_licenseKey" {
+			t.Errorf("retrived license ket does not match %v", "example_licenseKey")
+		}
+		if credentials.ClientSecret != "example_clientSecret" {
+			t.Errorf("retrived client secret does not match %v", "example_clientSecret")
+		}
+		if credentials.ClientId != "example_clientId" {
+			t.Errorf("retrived client id does not match %v", "example_clientId")
+		}
+		if credentials.AccessTokenUri != "example_accessTokenUri" {
+			t.Errorf("retrived access token uri does not match %v", "example_accessTokenUri")
+		}
+		if credentials.Hostname != "example_hostname" {
+			t.Errorf("retrived hostname does not match %v", "example_hostname")
+		}
+		if credentials.Username != "example_username" {
+			t.Errorf("retrived username does not match %v", "example_username")
+		}
+		if credentials.Password != "example_password" {
+			t.Errorf("retrived password does not match %v", "example_password")
+		}
+		if credentials.Port != "example_port" {
+			t.Errorf("retrived port does not match %v", "example_port")
+		}
 	}
 }
 

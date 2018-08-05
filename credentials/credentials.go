@@ -1,5 +1,9 @@
 package credentials
 
+type ServiceCredentials struct {
+	Credentials []Credentials
+}
+
 type Credentials struct {
 	Uri            string `json:"uri"`
 	APIUri         string `json:"http_api_uri"`
