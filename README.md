@@ -1,5 +1,6 @@
 # CF Services
 [![Build Status](https://travis-ci.org/Piszmog/cfservices.svg?branch=develop)](https://travis-ci.org/Piszmog/cfservices)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Piszmog/cfservices)](https://goreportcard.com/report/github.com/Piszmog/cfservices)
 [![GitHub release](https://img.shields.io/github/release/Piszmog/cfservices.svg)](https://github.com/Piszmog/cfservices/releases/latest)
 
 When I started learning Go and deploying it to a cloud environment, a majority of the tutorials and examples I came across 
