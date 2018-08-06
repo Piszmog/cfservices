@@ -7,21 +7,22 @@ import (
 	"os"
 )
 
+// VCAPServices is the environment variable that Cloud Foundry places all configurations for bounded services.
 const VCAPServices = "VCAP_SERVICES"
 
-// Retrieves the JSON from the environment variables 'VCAP_SERVICES'
+// LoadFromEnvironment retrieves the JSON from the environment variables 'VCAP_SERVICES'.
 func LoadFromEnvironment() string {
 	return os.Getenv(VCAPServices)
 }
 
-// Retrieves from credentials for the provided service from the 'VCAP_SERVICES' JSON
+// GetServiceCredentials Retrieves from credentials for the provided service from the 'VCAP_SERVICES' JSON.
 func GetServiceCredentials(serviceName string, services string) (*credentials.ServiceCredentials, error) {
-	servicesJson := make(map[string][]map[string]credentials.Credentials)
-	err := json.Unmarshal([]byte(services), &servicesJson)
+	servicesJSON := make(map[string][]map[string]credentials.Credentials)
+	err := json.Unmarshal([]byte(services), &servicesJSON)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal JSON")
 	}
-	service := servicesJson[serviceName]
+	service := servicesJSON[serviceName]
 	if service == nil {
 		return nil, errors.New("VCAP Service JSON does not contain " + serviceName)
 	}
