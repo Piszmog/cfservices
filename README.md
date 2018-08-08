@@ -1,5 +1,6 @@
 # CF Services
 [![Build Status](https://travis-ci.org/Piszmog/cfservices.svg?branch=develop)](https://travis-ci.org/Piszmog/cfservices)
+[![Coverage Status](https://coveralls.io/repos/github/Piszmog/cfservices/badge.svg?branch=develop)](https://coveralls.io/github/Piszmog/cfservices?branch=develop)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Piszmog/cfservices)](https://goreportcard.com/report/github.com/Piszmog/cfservices)
 [![GitHub release](https://img.shields.io/github/release/Piszmog/cfservices.svg)](https://github.com/Piszmog/cfservices/releases/latest)
 
