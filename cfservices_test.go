@@ -9,6 +9,7 @@ func TestGetUriCredentials(t *testing.T) {
 	const services = `{
       "serviceA": [
         {
+          "name":"service_a",
           "credentials": {
             "uri": "example_uri"
           }
