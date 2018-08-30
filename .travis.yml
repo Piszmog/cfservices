@@ -3,6 +3,9 @@ language: go
 go:
 - "1.11"
 
+env:
+  - GO111MODULE=on
+
 notifications:
   email:
     on_success: never
@@ -24,7 +27,6 @@ before_install:
 - go get -u golang.org/x/vgo
 
 install:
-- vgo mod vendor
 - go get golang.org/x/tools/cmd/cover
 - go get github.com/mattn/goveralls
 
