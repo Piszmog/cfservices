@@ -13,8 +13,8 @@ environment variable and parsing out the credentials to connect to services.
 This library is aimed at removing the boilerplate code and let developers just worry about using actually connecting to 
 services they have bounded to their app.
 
-## Loading from Environment
-Simply use the returned string from `cfservices.LoadFromEnvironment()`.
+## Retrieving VCAP_SERVICES
+Simply use the returned string from `cfservices.GetServices()`.
 
 ## Retrieving Credentials of a Service
 Call `cfservices.GetServiceCredentials(..)` by passing the `VCAP_SERVICES` JSON and the name of the service to retrieve the 
