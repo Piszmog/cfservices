@@ -14,6 +14,7 @@ type ServiceCredentials struct {
 	Credentials []Credentials
 }
 
+// Service is contains all the information for a service bounded to an application.
 type Service struct {
 	Name         string      `json:"name"`
 	InstanceName string      `json:"instance_name"`
