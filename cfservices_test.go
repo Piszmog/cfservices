@@ -166,14 +166,14 @@ func TestLoadFromEnvironment(t *testing.T) {
       ]
     }`)
 	defer os.Unsetenv(VCAPServices)
-	vcapServices := LoadFromEnvironment()
+	vcapServices := GetServices()
 	if len(vcapServices) == 0 {
 		t.Errorf("failed to load services from environment")
 	}
 }
 
 func TestLoadFromEnvironmentWhenNotSet(t *testing.T) {
-	vcapServices := LoadFromEnvironment()
+	vcapServices := GetServices()
 	if len(vcapServices) != 0 {
 		t.Errorf("failed to load services from environment")
 	}

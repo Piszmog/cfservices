@@ -36,8 +36,8 @@ type Credentials struct {
 	Port           string `json:"port"`
 }
 
-// LoadFromEnvironment retrieves the JSON from the environment variables 'VCAP_SERVICES'.
-func LoadFromEnvironment() string {
+// GetServices retrieves the JSON from the environment variables 'VCAP_SERVICES'.
+func GetServices() string {
 	return os.Getenv(VCAPServices)
 }
 
