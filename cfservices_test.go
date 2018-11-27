@@ -112,7 +112,7 @@ func TestGetFullCredentials(t *testing.T) {
             "hostname": "example_hostname",
             "username": "example_username",
             "password": "example_password",
-            "port": "example_port"
+            "port": "1234"
           }
         }
       ]
@@ -149,7 +149,29 @@ func TestGetFullCredentials(t *testing.T) {
 		if credentials.Password != "example_password" {
 			t.Errorf("retrieved password does not match %v", "example_password")
 		}
-		if credentials.Port != "example_port" {
+		if credentials.Port.String() != "1234" {
+			t.Errorf("retrieved port does not match %v", "example_port")
+		}
+	}
+}
+
+func TestGetPortAsNumber(t *testing.T) {
+	const services = `{
+      "serviceA": [
+        {
+          "credentials": {
+            "port": 1234
+          }
+        }
+      ]
+    }`
+	serviceCreds, err := GetServiceCredentials("serviceA", services)
+	if err != nil || serviceCreds == nil {
+		t.Errorf("failed to get credentials. %v", err)
+	}
+	for _, credentials := range serviceCreds.Credentials {
+		port, _ := credentials.Port.Int64()
+		if port != 1234 {
 			t.Errorf("retrieved port does not match %v", "example_port")
 		}
 	}
