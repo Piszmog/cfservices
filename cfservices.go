@@ -36,6 +36,7 @@ type Credentials struct {
 	Username       string      `json:"username"`
 	Password       string      `json:"password"`
 	Port           json.Number `json:"port"`
+	Name           string      `json:"name"`
 }
 
 // GetServices retrieves the JSON from the environment variable 'VCAP_SERVICES'.
