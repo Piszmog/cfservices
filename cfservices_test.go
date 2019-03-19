@@ -113,7 +113,8 @@ func TestGetFullCredentials(t *testing.T) {
             "username": "example_username",
             "password": "example_password",
             "port": "1234",
-            "jdbcUrl": "jdbc:mysql:/url"
+            "jdbcUrl": "jdbc:mysql:/url",
+            "name": "someName"
           }
         }
       ]
@@ -151,10 +152,13 @@ func TestGetFullCredentials(t *testing.T) {
 			t.Errorf("retrieved password does not match %v", "example_password")
 		}
 		if credentials.Port.String() != "1234" {
-			t.Errorf("retrieved port does not match %v", "example_port")
+			t.Errorf("retrieved port does not match %v", "1234")
 		}
 		if credentials.JDBCUrl != "jdbc:mysql:/url" {
-			t.Errorf("retrieved port does not match %v", "example_port")
+			t.Errorf("retrieved JDBC URL does not match %v", "jdbc:mysql:/url")
+		}
+		if credentials.Name != "someName" {
+			t.Errorf("retrieved name does not match %v", "someName")
 		}
 	}
 }
