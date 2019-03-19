@@ -26,6 +26,7 @@ type Service struct {
 // Credentials is the credentials of a single bounded services.
 type Credentials struct {
 	Uri            string      `json:"uri"`
+	JDBCUrl        string      `json:"jdbcUrl"`
 	APIUri         string      `json:"http_api_uri"`
 	LicenceKey     string      `json:"licenseKey"`
 	ClientSecret   string      `json:"client_secret"`
