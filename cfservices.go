@@ -67,7 +67,7 @@ func GetServiceCredentials(serviceName string, services string) (*ServiceCredent
 		return nil, errors.New("VCAP Service JSON does not contain " + serviceName)
 	}
 	if len(service) == 0 {
-		return nil, errors.Errorf("%v has no data in JSON", serviceName)
+		return nil, errors.Errorf("%s has no data in JSON", serviceName)
 	}
 	serviceCreds := make([]Credentials, len(service))
 	for index, serviceObj := range service {
@@ -87,7 +87,7 @@ func GetServiceCredentialsFromEnvironment(serviceName string) (*ServiceCredentia
 		return nil, errors.New("VCAP Service JSON does not contain " + serviceName)
 	}
 	if len(service) == 0 {
-		return nil, errors.Errorf("%v has no data in JSON", serviceName)
+		return nil, errors.Errorf("%s has no data in JSON", serviceName)
 	}
 	serviceCreds := make([]Credentials, len(service))
 	for index, serviceObj := range service {
