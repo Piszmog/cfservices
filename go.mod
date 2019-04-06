@@ -1,3 +1,5 @@
 module github.com/Piszmog/cfservices
 
-require github.com/pkg/errors v0.8.0
+go 1.12
+
+require github.com/pkg/errors v0.8.1
