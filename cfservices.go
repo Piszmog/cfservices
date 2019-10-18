@@ -2,7 +2,7 @@ package cfservices
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
+	"fmt"
 	"os"
 )
 
@@ -50,7 +50,7 @@ func GetServicesAsMap() (map[string][]Service, error) {
 	servicesJSON := make(map[string][]Service)
 	err := json.Unmarshal([]byte(services), &servicesJSON)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal JSON")
+		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
 	return servicesJSON, nil
 }
@@ -60,14 +60,14 @@ func GetServiceCredentials(serviceName string, services string) (*ServiceCredent
 	servicesJSON := make(map[string][]Service)
 	err := json.Unmarshal([]byte(services), &servicesJSON)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal JSON")
+		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
 	service := servicesJSON[serviceName]
 	if service == nil {
-		return nil, errors.New("VCAP Service JSON does not contain " + serviceName)
+		return nil, fmt.Errorf("VCAP Service JSON does not contain %s", serviceName)
 	}
 	if len(service) == 0 {
-		return nil, errors.Errorf("%s has no data in JSON", serviceName)
+		return nil, fmt.Errorf("%s has no data in JSON", serviceName)
 	}
 	serviceCreds := make([]Credentials, len(service))
 	for index, serviceObj := range service {
@@ -80,14 +80,14 @@ func GetServiceCredentials(serviceName string, services string) (*ServiceCredent
 func GetServiceCredentialsFromEnvironment(serviceName string) (*ServiceCredentials, error) {
 	services, err := GetServicesAsMap()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to retrieve services from environment")
+		return nil, fmt.Errorf("failed to retrieve services from environment: %w", err)
 	}
 	service := services[serviceName]
 	if service == nil {
-		return nil, errors.New("VCAP Service JSON does not contain " + serviceName)
+		return nil, fmt.Errorf("VCAP Service JSON does not contain %s", serviceName)
 	}
 	if len(service) == 0 {
-		return nil, errors.Errorf("%s has no data in JSON", serviceName)
+		return nil, fmt.Errorf("%s has no data in JSON", serviceName)
 	}
 	serviceCreds := make([]Credentials, len(service))
 	for index, serviceObj := range service {
