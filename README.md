@@ -19,6 +19,3 @@ Simply use the returned string from `cfservices.GetServices()`.
 ## Retrieving Credentials of a Service
 Call `cfservices.GetServiceCredentials(..)` by passing the `VCAP_SERVICES` JSON and the name of the service to retrieve the 
 credentials for.
-
-## Dependencies
-* [errors](https://github.com/pkg/errors)
