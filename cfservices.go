@@ -46,7 +46,7 @@ func GetServices() string {
 
 // GetServicesAsMap retrieves the JSON from the environment variable 'VCAP_SERVICES' and converts to to a map.
 func GetServicesAsMap() (map[string][]Service, error) {
-	services := os.Getenv(VCAPServices)
+	services := GetServices()
 	servicesJSON := make(map[string][]Service)
 	err := json.Unmarshal([]byte(services), &servicesJSON)
 	if err != nil {
@@ -67,7 +67,7 @@ func GetServiceCredentials(serviceName string, services string) (*ServiceCredent
 		return nil, fmt.Errorf("VCAP Service JSON does not contain %s", serviceName)
 	}
 	if len(service) == 0 {
-		return nil, fmt.Errorf("%s has no data in JSON", serviceName)
+		return nil, fmt.Errorf("%s has no data", serviceName)
 	}
 	serviceCreds := make([]Credentials, len(service))
 	for index, serviceObj := range service {
