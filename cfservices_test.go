@@ -1,6 +1,8 @@
-package cfservices
+package cfservices_test
 
 import (
+	"encoding/json"
+	"github.com/Piszmog/cfservices"
 	"os"
 	"testing"
 )
@@ -16,7 +18,9 @@ func TestGetUriCredentials(t *testing.T) {
         }
       ]
     }`
-	credentials, err := GetServiceCredentials("serviceA", services)
+	servicesJSON := make(map[string][]cfservices.Service)
+	json.Unmarshal([]byte(services), &servicesJSON)
+	credentials, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
 	if err != nil || credentials == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
@@ -40,7 +44,9 @@ func TestGetUriCredentialsFromMultipleServices(t *testing.T) {
         }
       ]
     }`
-	serviceCred, err := GetServiceCredentials("serviceA", services)
+	servicesJSON := make(map[string][]cfservices.Service)
+	json.Unmarshal([]byte(services), &servicesJSON)
+	serviceCred, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
 	if err != nil || serviceCred == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
@@ -65,23 +71,9 @@ func TestGetCredentialsFromNonexistentService(t *testing.T) {
         }
       ]
     }`
-	_, err := GetServiceCredentials("serviceB", services)
-	if err == nil {
-		t.Errorf("retrieved creditenals from non-existent service %v", err)
-	}
-}
-
-func TestInvalidJson(t *testing.T) {
-	const services = `{
-      "serviceA": [
-        {
-          "credentials": {
-            "uri": "example_uri"
-          },
-        }
-      ]
-    }`
-	_, err := GetServiceCredentials("serviceB", services)
+	servicesJSON := make(map[string][]cfservices.Service)
+	json.Unmarshal([]byte(services), &servicesJSON)
+	_, err := cfservices.GetServiceCredentials(servicesJSON, "serviceB")
 	if err == nil {
 		t.Errorf("retrieved creditenals from non-existent service %v", err)
 	}
@@ -92,7 +84,9 @@ func TestGetCredentialsFromEmptyService(t *testing.T) {
       "serviceA": [
       ]
     }`
-	_, err := GetServiceCredentials("serviceA", services)
+	servicesJSON := make(map[string][]cfservices.Service)
+	json.Unmarshal([]byte(services), &servicesJSON)
+	_, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
 	if err == nil {
 		t.Errorf("retrieved creditenals from non-existent service %v", err)
 	}
@@ -119,7 +113,9 @@ func TestGetFullCredentials(t *testing.T) {
         }
       ]
     }`
-	serviceCreds, err := GetServiceCredentials("serviceA", services)
+	servicesJSON := make(map[string][]cfservices.Service)
+	json.Unmarshal([]byte(services), &servicesJSON)
+	serviceCreds, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
 	if err != nil || serviceCreds == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
@@ -173,7 +169,9 @@ func TestGetPortAsNumber(t *testing.T) {
         }
       ]
     }`
-	serviceCreds, err := GetServiceCredentials("serviceA", services)
+	servicesJSON := make(map[string][]cfservices.Service)
+	json.Unmarshal([]byte(services), &servicesJSON)
+	serviceCreds, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
 	if err != nil || serviceCreds == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
@@ -196,9 +194,9 @@ func TestGetUriCredentialsFromEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(VCAPServices, services)
-	defer os.Unsetenv(VCAPServices)
-	credentials, err := GetServiceCredentialsFromEnvironment("serviceA")
+	os.Setenv(cfservices.VCAPServices, services)
+	defer os.Unsetenv(cfservices.VCAPServices)
+	credentials, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
 	if err != nil || credentials == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
@@ -222,9 +220,9 @@ func TestGetUriCredentialsFromMultipleServicesInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(VCAPServices, services)
-	defer os.Unsetenv(VCAPServices)
-	serviceCred, err := GetServiceCredentialsFromEnvironment("serviceA")
+	os.Setenv(cfservices.VCAPServices, services)
+	defer os.Unsetenv(cfservices.VCAPServices)
+	serviceCred, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
 	if err != nil || serviceCred == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
@@ -249,9 +247,9 @@ func TestGetCredentialsFromNonexistentServiceInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(VCAPServices, services)
-	defer os.Unsetenv(VCAPServices)
-	_, err := GetServiceCredentialsFromEnvironment("serviceB")
+	os.Setenv(cfservices.VCAPServices, services)
+	defer os.Unsetenv(cfservices.VCAPServices)
+	_, err := cfservices.GetServiceCredentialsFromEnvironment("serviceB")
 	if err == nil {
 		t.Errorf("retrieved creditenals from non-existent service %v", err)
 	}
@@ -267,9 +265,9 @@ func TestInvalidJsonInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(VCAPServices, services)
-	defer os.Unsetenv(VCAPServices)
-	_, err := GetServiceCredentialsFromEnvironment("serviceB")
+	os.Setenv(cfservices.VCAPServices, services)
+	defer os.Unsetenv(cfservices.VCAPServices)
+	_, err := cfservices.GetServiceCredentialsFromEnvironment("serviceB")
 	if err == nil {
 		t.Errorf("retrieved creditenals from non-existent service %v", err)
 	}
@@ -280,9 +278,9 @@ func TestGetCredentialsFromEmptyServiceInEnv(t *testing.T) {
       "serviceA": [
       ]
     }`
-	os.Setenv(VCAPServices, services)
-	defer os.Unsetenv(VCAPServices)
-	_, err := GetServiceCredentialsFromEnvironment("serviceA")
+	os.Setenv(cfservices.VCAPServices, services)
+	defer os.Unsetenv(cfservices.VCAPServices)
+	_, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
 	if err == nil {
 		t.Errorf("retrieved creditenals from non-existent service %v", err)
 	}
@@ -307,9 +305,9 @@ func TestGetFullCredentialsInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(VCAPServices, services)
-	defer os.Unsetenv(VCAPServices)
-	serviceCreds, err := GetServiceCredentialsFromEnvironment("serviceA")
+	os.Setenv(cfservices.VCAPServices, services)
+	defer os.Unsetenv(cfservices.VCAPServices)
+	serviceCreds, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
 	if err != nil || serviceCreds == nil {
 		t.Errorf("failed to get credentials. %v", err)
 	}
@@ -347,8 +345,8 @@ func TestGetFullCredentialsInEnv(t *testing.T) {
 	}
 }
 
-func TestLoadFromEnvironment(t *testing.T) {
-	os.Setenv(VCAPServices, `{
+func TestGetServices(t *testing.T) {
+	os.Setenv(cfservices.VCAPServices, `{
       "serviceA": [
         {
           "credentials": {
@@ -357,32 +355,8 @@ func TestLoadFromEnvironment(t *testing.T) {
         }
       ]
     }`)
-	defer os.Unsetenv(VCAPServices)
-	vcapServices := GetServices()
-	if len(vcapServices) == 0 {
-		t.Errorf("failed to load services from environment")
-	}
-}
-
-func TestLoadFromEnvironmentWhenNotSet(t *testing.T) {
-	vcapServices := GetServices()
-	if len(vcapServices) != 0 {
-		t.Errorf("failed to load services from environment")
-	}
-}
-
-func TestLoadFromEnvironmentAsMap(t *testing.T) {
-	os.Setenv(VCAPServices, `{
-      "serviceA": [
-        {
-          "credentials": {
-            "uri": "example_uri"
-          }
-        }
-      ]
-    }`)
-	defer os.Unsetenv(VCAPServices)
-	vcapServices, err := GetServicesAsMap()
+	defer os.Unsetenv(cfservices.VCAPServices)
+	vcapServices, err := cfservices.GetServices()
 	if len(vcapServices) == 0 {
 		t.Errorf("failed to load services from environment")
 	}
@@ -391,8 +365,8 @@ func TestLoadFromEnvironmentAsMap(t *testing.T) {
 	}
 }
 
-func TestLoadFromEnvironmentAsMapWhenNotSet(t *testing.T) {
-	vcapServices, err := GetServicesAsMap()
+func TestGetServicesWhenNotSet(t *testing.T) {
+	vcapServices, err := cfservices.GetServices()
 	if len(vcapServices) != 0 {
 		t.Errorf("failed to load services from environment")
 	}
