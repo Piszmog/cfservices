@@ -11,7 +11,7 @@ services they have bounded to their app.
 `go get github.com/Piszmog/cfservices`
 
 ## Retrieving VCAP_SERVICES
-Simply use `cfservices.GetServicesAsMap()`.
+Simply use `cfservices.GetServices()`.
 
 ```go
 package main
