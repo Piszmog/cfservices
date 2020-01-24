@@ -10,28 +10,15 @@ services they have bounded to their app.
 
 `go get github.com/Piszmog/cfservices`
 
-## Retrieving Raw VCAP_SERVICES
-Simply use the returned string from `cfservices.GetServices()`.
+## Retrieving VCAP_SERVICES
+Simply use `cfservices.GetServicesAsMap()`.
 
 ```go
 package main
 import "github.com/Piszmog/cfservices"
 
 func main() {
-	services := cfservices.GetServices()
-	// Parse JSON
-}
-```
-
-## Retrieving Parsed VCAP_SERVICES
-To have the environment variable parsed, use `cfservices.GetServicesAsMap()`.
-
-```go
-package main
-import "github.com/Piszmog/cfservices"
-
-func main() {
-	services, err := cfservices.GetServicesAsMap()
+	services, err := cfservices.GetServices()
 	if err != nil {
 		// handle error
 	}
@@ -41,7 +28,7 @@ func main() {
 ```
 
 ## Retrieving Credentials of a Service
-Call `cfservices.GetServiceCredentials(..)` by passing the `VCAP_SERVICES` JSON and the name of the service to retrieve the 
+Call `cfservices.GetServiceCredentials(..)` by passing the `VCAP_SERVICES` marshalled JSON and the name of the service to retrieve the 
 credentials for. If `VCAP_SERVICES` is guaranteed to be an environment variable use `cfservices.GetServiceCredentialsFromEnvironment(..)` 
 instead.
 
@@ -50,23 +37,19 @@ package main
 import "github.com/Piszmog/cfservices"
 
 func main() {
-	creds, err := cfservices.GetServiceCredentials("RAW_JSON", "serviceB")
+	var services map[string][]cfservices.Service
+	// Read the services into the struct
+	creds, err := cfservices.GetServiceCredentials(services, "serviceB")
 	if err != nil {
 		// handle error
 	}
-	// Use credentials
-}
-```
-
-```go
-package main
-import "github.com/Piszmog/cfservices"
-
-func main() {
-	creds, err := cfservices.GetServiceCredentialsFromEnvironment("serviceB")
+	// Use credentials...
+	
+	// Retrieve the JSON from the environment
+	creds, err = cfservices.GetServiceCredentialsFromEnvironment("serviceB")
 	if err != nil {
 		// handle error
 	}
-	// Use credentials
+	// Use credentials...
 }
 ```

@@ -39,14 +39,18 @@ type Credentials struct {
 	Name           string      `json:"name"`
 }
 
-// GetServices retrieves the JSON from the environment variable 'VCAP_SERVICES'.
-func GetServices() string {
-	return os.Getenv(VCAPServices)
+// GetServiceCredentialsFromEnvironment retrieves from credentials for the environment variable 'VCAP_SERVICES'.
+func GetServiceCredentialsFromEnvironment(serviceName string) (*ServiceCredentials, error) {
+	services, err := GetServices()
+	if err != nil {
+		return nil, err
+	}
+	return GetServiceCredentials(services, serviceName)
 }
 
-// GetServicesAsMap retrieves the JSON from the environment variable 'VCAP_SERVICES' and converts to to a map.
-func GetServicesAsMap() (map[string][]Service, error) {
-	services := GetServices()
+// GetServices retrieves the JSON from the environment variable 'VCAP_SERVICES' and converts to to a map.
+func GetServices() (map[string][]Service, error) {
+	services := getServicesFromEnvironment()
 	servicesJSON := make(map[string][]Service)
 	err := json.Unmarshal([]byte(services), &servicesJSON)
 	if err != nil {
@@ -55,39 +59,18 @@ func GetServicesAsMap() (map[string][]Service, error) {
 	return servicesJSON, nil
 }
 
+func getServicesFromEnvironment() string {
+	return os.Getenv(VCAPServices)
+}
+
 // GetServiceCredentials retrieves from credentials for the provided service from the 'VCAP_SERVICES' JSON.
-func GetServiceCredentials(serviceName string, services string) (*ServiceCredentials, error) {
-	servicesJSON := make(map[string][]Service)
-	err := json.Unmarshal([]byte(services), &servicesJSON)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
-	}
-	service := servicesJSON[serviceName]
+func GetServiceCredentials(services map[string][]Service, serviceName string) (*ServiceCredentials, error) {
+	service := services[serviceName]
 	if service == nil {
-		return nil, fmt.Errorf("VCAP Service JSON does not contain %s", serviceName)
+		return nil, fmt.Errorf("vcap service does not contain %s", serviceName)
 	}
 	if len(service) == 0 {
 		return nil, fmt.Errorf("%s has no data", serviceName)
-	}
-	serviceCreds := make([]Credentials, len(service))
-	for index, serviceObj := range service {
-		serviceCreds[index] = serviceObj.Credentials
-	}
-	return &ServiceCredentials{Credentials: serviceCreds}, nil
-}
-
-// GetServiceCredentialsFromEnvironment retrieves from credentials for the environment variable 'VCAP_SERVICES'.
-func GetServiceCredentialsFromEnvironment(serviceName string) (*ServiceCredentials, error) {
-	services, err := GetServicesAsMap()
-	if err != nil {
-		return nil, fmt.Errorf("failed to retrieve services from environment: %w", err)
-	}
-	service := services[serviceName]
-	if service == nil {
-		return nil, fmt.Errorf("VCAP Service JSON does not contain %s", serviceName)
-	}
-	if len(service) == 0 {
-		return nil, fmt.Errorf("%s has no data in JSON", serviceName)
 	}
 	serviceCreds := make([]Credentials, len(service))
 	for index, serviceObj := range service {
