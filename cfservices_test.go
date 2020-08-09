@@ -300,7 +300,7 @@ func TestGetFullCredentialsInEnv(t *testing.T) {
             "hostname": "example_hostname",
             "username": "example_username",
             "password": "example_password",
-            "port": "example_port"
+            "port": "8080"
           }
         }
       ]
@@ -339,7 +339,7 @@ func TestGetFullCredentialsInEnv(t *testing.T) {
 		if credentials.Password != "example_password" {
 			t.Errorf("retrieved password does not match %v", "example_password")
 		}
-		if credentials.Port != "example_port" {
+		if credentials.Port != "8080" {
 			t.Errorf("retrieved port does not match %v", "example_port")
 		}
 	}
