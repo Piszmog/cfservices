@@ -19,7 +19,15 @@ jobs:
       - name: Get dependencies
         run: |
           go get -v -t -d ./...
-      - name: Build
-        run: go build -v .
-      - name: Test
-        run: go test -v .
+      - name: Test and Calculate Coverage
+        run: go test -v -covermode=count -coverprofile=coverage.out
+      - name: Convert coverage to lcov
+        uses: jandelgado/gcov2lcov-action@v1.0.2
+        with:
+          infile: coverage.out
+          outfile: coverage.lcov
+      - name: Coveralls
+        uses: coverallsapp/github-action@v1.0.2
+        with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: coverage.lcov
