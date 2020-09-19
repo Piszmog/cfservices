@@ -38,7 +38,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.organization=Piszmog
+            -Dsonar.organization=piszmog
             -Dsonar.projectKey=Piszmog_cfservices
             -Dsonar.sources=.
             -Dsonar.exclusions=**/*_test.go
