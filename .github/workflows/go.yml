@@ -36,3 +36,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=Piszmog
+            -Dsonar.projectKey=Piszmog_cfservices
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/*_test.go
