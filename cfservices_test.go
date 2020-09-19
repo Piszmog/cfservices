@@ -3,6 +3,7 @@ package cfservices_test
 import (
 	"encoding/json"
 	"github.com/Piszmog/cfservices"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
@@ -19,14 +20,11 @@ func TestGetUriCredentials(t *testing.T) {
       ]
     }`
 	servicesJSON := make(map[string][]cfservices.Service)
-	json.Unmarshal([]byte(services), &servicesJSON)
+	err := json.Unmarshal([]byte(services), &servicesJSON)
+	assert.NoError(t, err, "failed to unmarshal JSON")
 	credentials, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
-	if err != nil || credentials == nil {
-		t.Errorf("failed to get credentials. %v", err)
-	}
-	if credentials.Credentials[0].Uri != "example_uri" {
-		t.Errorf("retrieved uri does not match %v", "example_uri")
-	}
+	assert.NoError(t, err, "failed to get credentials")
+	assert.Equal(t, "example_uri", credentials.Credentials[0].Uri)
 }
 
 func TestGetUriCredentialsFromMultipleServices(t *testing.T) {
@@ -45,19 +43,14 @@ func TestGetUriCredentialsFromMultipleServices(t *testing.T) {
       ]
     }`
 	servicesJSON := make(map[string][]cfservices.Service)
-	json.Unmarshal([]byte(services), &servicesJSON)
+	err := json.Unmarshal([]byte(services), &servicesJSON)
+	assert.NoError(t, err, "failed to unmarshal JSON")
 	serviceCred, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
-	if err != nil || serviceCred == nil {
-		t.Errorf("failed to get credentials. %v", err)
-	}
+	assert.NoError(t, err, "failed to get credentials")
 	creds := serviceCred.Credentials
-	if len(creds) != 2 {
-		t.Errorf("service does not contain both credentials")
-	}
+	assert.Equal(t, 2, len(creds))
 	for _, cred := range creds {
-		if cred.Uri != "example_uri" {
-			t.Errorf("retrieved uri does not match %v", "example_uri")
-		}
+		assert.Equal(t, "example_uri", cred.Uri)
 	}
 }
 
@@ -72,11 +65,10 @@ func TestGetCredentialsFromNonexistentService(t *testing.T) {
       ]
     }`
 	servicesJSON := make(map[string][]cfservices.Service)
-	json.Unmarshal([]byte(services), &servicesJSON)
-	_, err := cfservices.GetServiceCredentials(servicesJSON, "serviceB")
-	if err == nil {
-		t.Errorf("retrieved creditenals from non-existent service %v", err)
-	}
+	err := json.Unmarshal([]byte(services), &servicesJSON)
+	assert.NoError(t, err, "failed to unmarshal JSON")
+	_, err = cfservices.GetServiceCredentials(servicesJSON, "serviceB")
+	assert.Error(t, err, "retrieved credentials from non-existent service")
 }
 
 func TestGetCredentialsFromEmptyService(t *testing.T) {
@@ -85,11 +77,10 @@ func TestGetCredentialsFromEmptyService(t *testing.T) {
       ]
     }`
 	servicesJSON := make(map[string][]cfservices.Service)
-	json.Unmarshal([]byte(services), &servicesJSON)
-	_, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
-	if err == nil {
-		t.Errorf("retrieved creditenals from non-existent service %v", err)
-	}
+	err := json.Unmarshal([]byte(services), &servicesJSON)
+	assert.NoError(t, err, "failed to unmarshal JSON")
+	_, err = cfservices.GetServiceCredentials(servicesJSON, "serviceA")
+	assert.Error(t, err, "retrieved credentials from non-existent service")
 }
 
 func TestGetFullCredentials(t *testing.T) {
@@ -114,48 +105,26 @@ func TestGetFullCredentials(t *testing.T) {
       ]
     }`
 	servicesJSON := make(map[string][]cfservices.Service)
-	json.Unmarshal([]byte(services), &servicesJSON)
+	err := json.Unmarshal([]byte(services), &servicesJSON)
+	assert.NoError(t, err, "failed to unmarshal JSON")
 	serviceCreds, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
-	if err != nil || serviceCreds == nil {
-		t.Errorf("failed to get credentials. %v", err)
+	assert.NoError(t, err, "failed to get credentials")
+	expectedCredentials := cfservices.Credentials{
+		Uri:            "example_uri",
+		JDBCUrl:        "jdbc:mysql:/url",
+		APIUri:         "example_httpAPIUri",
+		LicenceKey:     "example_licenseKey",
+		ClientSecret:   "example_clientSecret",
+		ClientId:       "example_clientId",
+		AccessTokenUri: "example_accessTokenUri",
+		Hostname:       "example_hostname",
+		Username:       "example_username",
+		Password:       "example_password",
+		Port:           "1234",
+		Name:           "someName",
 	}
 	for _, credentials := range serviceCreds.Credentials {
-		if credentials.Uri != "example_uri" {
-			t.Errorf("retrieved uri does not match %v", "example_uri")
-		}
-		if credentials.APIUri != "example_httpAPIUri" {
-			t.Errorf("retrieved http api uri does not match %v", "example_httpAPIUri")
-		}
-		if credentials.LicenceKey != "example_licenseKey" {
-			t.Errorf("retrieved license ket does not match %v", "example_licenseKey")
-		}
-		if credentials.ClientSecret != "example_clientSecret" {
-			t.Errorf("retrieved client secret does not match %v", "example_clientSecret")
-		}
-		if credentials.ClientId != "example_clientId" {
-			t.Errorf("retrieved client id does not match %v", "example_clientId")
-		}
-		if credentials.AccessTokenUri != "example_accessTokenUri" {
-			t.Errorf("retrieved access token uri does not match %v", "example_accessTokenUri")
-		}
-		if credentials.Hostname != "example_hostname" {
-			t.Errorf("retrieved hostname does not match %v", "example_hostname")
-		}
-		if credentials.Username != "example_username" {
-			t.Errorf("retrieved username does not match %v", "example_username")
-		}
-		if credentials.Password != "example_password" {
-			t.Errorf("retrieved password does not match %v", "example_password")
-		}
-		if credentials.Port.String() != "1234" {
-			t.Errorf("retrieved port does not match %v", "1234")
-		}
-		if credentials.JDBCUrl != "jdbc:mysql:/url" {
-			t.Errorf("retrieved JDBC URL does not match %v", "jdbc:mysql:/url")
-		}
-		if credentials.Name != "someName" {
-			t.Errorf("retrieved name does not match %v", "someName")
-		}
+		assert.Equal(t, expectedCredentials, credentials)
 	}
 }
 
@@ -170,16 +139,14 @@ func TestGetPortAsNumber(t *testing.T) {
       ]
     }`
 	servicesJSON := make(map[string][]cfservices.Service)
-	json.Unmarshal([]byte(services), &servicesJSON)
+	err := json.Unmarshal([]byte(services), &servicesJSON)
+	assert.NoError(t, err, "failed to unmarshal JSON")
 	serviceCreds, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
-	if err != nil || serviceCreds == nil {
-		t.Errorf("failed to get credentials. %v", err)
-	}
+	assert.NoError(t, err, "failed to get credentials")
 	for _, credentials := range serviceCreds.Credentials {
-		port, _ := credentials.Port.Int64()
-		if port != 1234 {
-			t.Errorf("retrieved port does not match %v", "example_port")
-		}
+		port, err := credentials.Port.Int64()
+		assert.NoError(t, err, "failed to convert port integer")
+		assert.Equal(t, int64(1234), port)
 	}
 }
 
@@ -194,15 +161,12 @@ func TestGetUriCredentialsFromEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(cfservices.VCAPServices, services)
+	err := os.Setenv(cfservices.VCAPServices, services)
+	assert.NoError(t, err, "failed to set environment variable")
 	defer os.Unsetenv(cfservices.VCAPServices)
 	credentials, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
-	if err != nil || credentials == nil {
-		t.Errorf("failed to get credentials. %v", err)
-	}
-	if credentials.Credentials[0].Uri != "example_uri" {
-		t.Errorf("retrieved uri does not match %v", "example_uri")
-	}
+	assert.NoError(t, err, "failed to get credentials")
+	assert.Equal(t, "example_uri", credentials.Credentials[0].Uri)
 }
 
 func TestGetUriCredentialsFromMultipleServicesInEnv(t *testing.T) {
@@ -220,20 +184,15 @@ func TestGetUriCredentialsFromMultipleServicesInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(cfservices.VCAPServices, services)
+	err := os.Setenv(cfservices.VCAPServices, services)
+	assert.NoError(t, err, "failed to set environment variable")
 	defer os.Unsetenv(cfservices.VCAPServices)
 	serviceCred, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
-	if err != nil || serviceCred == nil {
-		t.Errorf("failed to get credentials. %v", err)
-	}
+	assert.NoError(t, err, "failed to get credentials")
 	creds := serviceCred.Credentials
-	if len(creds) != 2 {
-		t.Errorf("service does not contain both credentials")
-	}
+	assert.Equal(t, 2, len(creds))
 	for _, cred := range creds {
-		if cred.Uri != "example_uri" {
-			t.Errorf("retrieved uri does not match %v", "example_uri")
-		}
+		assert.Equal(t, "example_uri", cred.Uri)
 	}
 }
 
@@ -247,12 +206,11 @@ func TestGetCredentialsFromNonexistentServiceInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(cfservices.VCAPServices, services)
+	err := os.Setenv(cfservices.VCAPServices, services)
+	assert.NoError(t, err, "failed to set environment variable")
 	defer os.Unsetenv(cfservices.VCAPServices)
-	_, err := cfservices.GetServiceCredentialsFromEnvironment("serviceB")
-	if err == nil {
-		t.Errorf("retrieved creditenals from non-existent service %v", err)
-	}
+	_, err = cfservices.GetServiceCredentialsFromEnvironment("serviceB")
+	assert.Error(t, err, "retrieved credentials from non-existent service")
 }
 
 func TestInvalidJsonInEnv(t *testing.T) {
@@ -265,12 +223,11 @@ func TestInvalidJsonInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(cfservices.VCAPServices, services)
+	err := os.Setenv(cfservices.VCAPServices, services)
+	assert.NoError(t, err, "failed to set environment variable")
 	defer os.Unsetenv(cfservices.VCAPServices)
-	_, err := cfservices.GetServiceCredentialsFromEnvironment("serviceB")
-	if err == nil {
-		t.Errorf("retrieved creditenals from non-existent service %v", err)
-	}
+	_, err = cfservices.GetServiceCredentialsFromEnvironment("serviceB")
+	assert.Error(t, err, "marshalled invalid JSON")
 }
 
 func TestGetCredentialsFromEmptyServiceInEnv(t *testing.T) {
@@ -278,12 +235,11 @@ func TestGetCredentialsFromEmptyServiceInEnv(t *testing.T) {
       "serviceA": [
       ]
     }`
-	os.Setenv(cfservices.VCAPServices, services)
+	err := os.Setenv(cfservices.VCAPServices, services)
+	assert.NoError(t, err, "failed to set environment variable")
 	defer os.Unsetenv(cfservices.VCAPServices)
-	_, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
-	if err == nil {
-		t.Errorf("retrieved creditenals from non-existent service %v", err)
-	}
+	_, err = cfservices.GetServiceCredentialsFromEnvironment("serviceA")
+	assert.Error(t, err, "retrieved credentials from non-existent service")
 }
 
 func TestGetFullCredentialsInEnv(t *testing.T) {
@@ -305,48 +261,30 @@ func TestGetFullCredentialsInEnv(t *testing.T) {
         }
       ]
     }`
-	os.Setenv(cfservices.VCAPServices, services)
+	err := os.Setenv(cfservices.VCAPServices, services)
+	assert.NoError(t, err, "failed to set environment variable")
 	defer os.Unsetenv(cfservices.VCAPServices)
 	serviceCreds, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
-	if err != nil || serviceCreds == nil {
-		t.Errorf("failed to get credentials. %v", err)
+	assert.NoError(t, err, "failed to get credentials")
+	expectedCredentials := cfservices.Credentials{
+		Uri:            "example_uri",
+		APIUri:         "example_httpAPIUri",
+		LicenceKey:     "example_licenseKey",
+		ClientSecret:   "example_clientSecret",
+		ClientId:       "example_clientId",
+		AccessTokenUri: "example_accessTokenUri",
+		Hostname:       "example_hostname",
+		Username:       "example_username",
+		Password:       "example_password",
+		Port:           "8080",
 	}
 	for _, credentials := range serviceCreds.Credentials {
-		if credentials.Uri != "example_uri" {
-			t.Errorf("retrieved uri does not match %v", "example_uri")
-		}
-		if credentials.APIUri != "example_httpAPIUri" {
-			t.Errorf("retrieved http api uri does not match %v", "example_httpAPIUri")
-		}
-		if credentials.LicenceKey != "example_licenseKey" {
-			t.Errorf("retrieved license ket does not match %v", "example_licenseKey")
-		}
-		if credentials.ClientSecret != "example_clientSecret" {
-			t.Errorf("retrieved client secret does not match %v", "example_clientSecret")
-		}
-		if credentials.ClientId != "example_clientId" {
-			t.Errorf("retrieved client id does not match %v", "example_clientId")
-		}
-		if credentials.AccessTokenUri != "example_accessTokenUri" {
-			t.Errorf("retrieved access token uri does not match %v", "example_accessTokenUri")
-		}
-		if credentials.Hostname != "example_hostname" {
-			t.Errorf("retrieved hostname does not match %v", "example_hostname")
-		}
-		if credentials.Username != "example_username" {
-			t.Errorf("retrieved username does not match %v", "example_username")
-		}
-		if credentials.Password != "example_password" {
-			t.Errorf("retrieved password does not match %v", "example_password")
-		}
-		if credentials.Port != "8080" {
-			t.Errorf("retrieved port does not match %v", "example_port")
-		}
+		assert.Equal(t, expectedCredentials, credentials)
 	}
 }
 
 func TestGetServices(t *testing.T) {
-	os.Setenv(cfservices.VCAPServices, `{
+	err := os.Setenv(cfservices.VCAPServices, `{
       "serviceA": [
         {
           "credentials": {
@@ -355,22 +293,15 @@ func TestGetServices(t *testing.T) {
         }
       ]
     }`)
+	assert.NoError(t, err, "failed to set environment variable")
 	defer os.Unsetenv(cfservices.VCAPServices)
 	vcapServices, err := cfservices.GetServices()
-	if len(vcapServices) == 0 {
-		t.Errorf("failed to load services from environment")
-	}
-	if err != nil {
-		t.Errorf("failed to load services from environment with error %v", err)
-	}
+	assert.NotEqual(t, 0, len(vcapServices), "failed to load services from environment")
+	assert.NoError(t, err, "failed to load services from environment with error")
 }
 
 func TestGetServicesWhenNotSet(t *testing.T) {
 	vcapServices, err := cfservices.GetServices()
-	if len(vcapServices) != 0 {
-		t.Errorf("failed to load services from environment")
-	}
-	if err == nil {
-		t.Errorf("failed to load services from environment with error %v", err)
-	}
+	assert.Equal(t, 0, len(vcapServices), "loaded services from environment")
+	assert.Error(t, err, "loaded services from environment with error")
 }
