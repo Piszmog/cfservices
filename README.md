@@ -1,7 +1,7 @@
 # CF Services
 [![Build Status](https://github.com/Piszmog/cfservices/workflows/Go/badge.svg)](https://github.com/Piszmog/cfservices/workflows/Go/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Piszmog_cfservices&metric=alert_status)](https://sonarcloud.io/dashboard?id=Piszmog_cfservices)
-[![Coverage Status](https://coveralls.io/repos/github/Piszmog/cfservices/badge.svg?branch=develop)](https://coveralls.io/github/Piszmog/cfservices?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/Piszmog/cfservices/badge.svg?branch=master)](https://coveralls.io/github/Piszmog/cfservices?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Piszmog/cfservices)](https://goreportcard.com/report/github.com/Piszmog/cfservices)
 [![GitHub release](https://img.shields.io/github/release/Piszmog/cfservices.svg)](https://github.com/Piszmog/cfservices/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
