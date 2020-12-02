@@ -2,6 +2,7 @@ package cfservices
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 )
@@ -63,11 +64,14 @@ func getServicesFromEnvironment() string {
 	return os.Getenv(VCAPServices)
 }
 
-// GetServiceCredentials retrieves from credentials for the provided service from the 'VCAP_SERVICES' JSON.
+// MissingServiceError is the error when the service does not exist in provided slice of services.
+var MissingServiceError = errors.New("service does not exist")
+
+// GetServiceCredentials retrieves the credentials for the specified service from the provided services.
 func GetServiceCredentials(services map[string][]Service, serviceName string) (*ServiceCredentials, error) {
 	service := services[serviceName]
 	if service == nil {
-		return nil, fmt.Errorf("vcap service does not contain %s", serviceName)
+		return nil, MissingServiceError
 	}
 	if len(service) == 0 {
 		return nil, fmt.Errorf("%s has no data", serviceName)
