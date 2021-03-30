@@ -61,7 +61,9 @@ func (c *Credentials) UnmarshalJSON(b []byte) error {
 			delete(additional, field.Tag.Get("json"))
 		}
 	}
-	c.Additional = additional
+	if len(additional) > 0 {
+		c.Additional = additional
+	}
 	return nil
 }
 
