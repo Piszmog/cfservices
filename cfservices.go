@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"reflect"
 )
 
 // VCAPServices is the environment variable that Cloud Foundry places all configurations for bounded services.
@@ -26,18 +27,42 @@ type Service struct {
 
 // Credentials is the credentials of a single bounded services.
 type Credentials struct {
-	Uri            string      `json:"uri"`
-	JDBCUrl        string      `json:"jdbcUrl"`
-	APIUri         string      `json:"http_api_uri"`
-	LicenceKey     string      `json:"licenseKey"`
-	ClientSecret   string      `json:"client_secret"`
-	ClientId       string      `json:"client_id"`
-	AccessTokenUri string      `json:"access_token_uri"`
-	Hostname       string      `json:"hostname"`
-	Username       string      `json:"username"`
-	Password       string      `json:"password"`
-	Port           json.Number `json:"port"`
-	Name           string      `json:"name"`
+	Uri            string                 `json:"uri"`
+	JDBCUrl        string                 `json:"jdbcUrl"`
+	APIUri         string                 `json:"http_api_uri"`
+	LicenceKey     string                 `json:"licenseKey"`
+	ClientSecret   string                 `json:"client_secret"`
+	ClientId       string                 `json:"client_id"`
+	AccessTokenUri string                 `json:"access_token_uri"`
+	Hostname       string                 `json:"hostname"`
+	Username       string                 `json:"username"`
+	Password       string                 `json:"password"`
+	Port           json.Number            `json:"port"`
+	Name           string                 `json:"name"`
+	Additional     map[string]interface{} `json:"-"`
+}
+
+type _cred Credentials
+
+func (c *Credentials) UnmarshalJSON(b []byte) error {
+	var cred _cred
+	if err := json.Unmarshal(b, &cred); err != nil {
+		return err
+	}
+	*c = Credentials(cred)
+	var additional map[string]interface{}
+	if err := json.Unmarshal(b, &additional); err != nil {
+		return err
+	}
+	credStruct := reflect.TypeOf(Credentials{})
+	for i := 0; i < credStruct.NumField(); i++ {
+		field := credStruct.Field(i)
+		if field.Name != "Additional" {
+			delete(additional, field.Tag.Get("json"))
+		}
+	}
+	c.Additional = additional
+	return nil
 }
 
 // GetServiceCredentialsFromEnvironment retrieves from credentials for the environment variable 'VCAP_SERVICES'.

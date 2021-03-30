@@ -99,7 +99,11 @@ func TestGetFullCredentials(t *testing.T) {
             "password": "example_password",
             "port": "1234",
             "jdbcUrl": "jdbc:mysql:/url",
-            "name": "someName"
+            "name": "someName",
+            "foo": "bar",
+            "field1": "value1",
+            "field2": "value2",
+            "field3": 3
           }
         }
       ]
@@ -122,6 +126,12 @@ func TestGetFullCredentials(t *testing.T) {
 		Password:       "example_password",
 		Port:           "1234",
 		Name:           "someName",
+		Additional: map[string]interface{}{
+			"foo":    "bar",
+			"field1": "value1",
+			"field2": "value2",
+			"field3": float64(3),
+		},
 	}
 	for _, credentials := range serviceCreds.Credentials {
 		assert.Equal(t, expectedCredentials, credentials)
