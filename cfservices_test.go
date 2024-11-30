@@ -2,10 +2,11 @@ package cfservices_test
 
 import (
 	"encoding/json"
-	"github.com/Piszmog/cfservices"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/Piszmog/cfservices/v2"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetUriCredentials(t *testing.T) {
@@ -24,7 +25,7 @@ func TestGetUriCredentials(t *testing.T) {
 	assert.NoError(t, err, "failed to unmarshal JSON")
 	credentials, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
 	assert.NoError(t, err, "failed to get credentials")
-	assert.Equal(t, "example_uri", credentials.Credentials[0].Uri)
+	assert.Equal(t, "example_uri", credentials.Credentials[0].URI)
 }
 
 func TestGetUriCredentialsFromMultipleServices(t *testing.T) {
@@ -50,7 +51,7 @@ func TestGetUriCredentialsFromMultipleServices(t *testing.T) {
 	creds := serviceCred.Credentials
 	assert.Equal(t, 2, len(creds))
 	for _, cred := range creds {
-		assert.Equal(t, "example_uri", cred.Uri)
+		assert.Equal(t, "example_uri", cred.URI)
 	}
 }
 
@@ -114,13 +115,13 @@ func TestGetFullCredentials(t *testing.T) {
 	serviceCreds, err := cfservices.GetServiceCredentials(servicesJSON, "serviceA")
 	assert.NoError(t, err, "failed to get credentials")
 	expectedCredentials := cfservices.Credentials{
-		Uri:            "example_uri",
+		URI:            "example_uri",
 		JDBCUrl:        "jdbc:mysql:/url",
 		APIUri:         "example_httpAPIUri",
 		LicenceKey:     "example_licenseKey",
 		ClientSecret:   "example_clientSecret",
-		ClientId:       "example_clientId",
-		AccessTokenUri: "example_accessTokenUri",
+		ClientID:       "example_clientId",
+		AccessTokenURI: "example_accessTokenUri",
 		Hostname:       "example_hostname",
 		Username:       "example_username",
 		Password:       "example_password",
@@ -176,7 +177,7 @@ func TestGetUriCredentialsFromEnv(t *testing.T) {
 	defer os.Unsetenv(cfservices.VCAPServices)
 	credentials, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
 	assert.NoError(t, err, "failed to get credentials")
-	assert.Equal(t, "example_uri", credentials.Credentials[0].Uri)
+	assert.Equal(t, "example_uri", credentials.Credentials[0].URI)
 }
 
 func TestGetUriCredentialsFromMultipleServicesInEnv(t *testing.T) {
@@ -202,7 +203,7 @@ func TestGetUriCredentialsFromMultipleServicesInEnv(t *testing.T) {
 	creds := serviceCred.Credentials
 	assert.Equal(t, 2, len(creds))
 	for _, cred := range creds {
-		assert.Equal(t, "example_uri", cred.Uri)
+		assert.Equal(t, "example_uri", cred.URI)
 	}
 }
 
@@ -277,12 +278,12 @@ func TestGetFullCredentialsInEnv(t *testing.T) {
 	serviceCreds, err := cfservices.GetServiceCredentialsFromEnvironment("serviceA")
 	assert.NoError(t, err, "failed to get credentials")
 	expectedCredentials := cfservices.Credentials{
-		Uri:            "example_uri",
+		URI:            "example_uri",
 		APIUri:         "example_httpAPIUri",
 		LicenceKey:     "example_licenseKey",
 		ClientSecret:   "example_clientSecret",
-		ClientId:       "example_clientId",
-		AccessTokenUri: "example_accessTokenUri",
+		ClientID:       "example_clientId",
+		AccessTokenURI: "example_accessTokenUri",
 		Hostname:       "example_hostname",
 		Username:       "example_username",
 		Password:       "example_password",

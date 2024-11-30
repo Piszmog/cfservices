@@ -27,19 +27,19 @@ type Service struct {
 
 // Credentials is the credentials of a single bounded services.
 type Credentials struct {
-	Uri            string                 `json:"uri"`
+	URI            string                 `json:"uri"`
 	JDBCUrl        string                 `json:"jdbcUrl"`
 	APIUri         string                 `json:"http_api_uri"`
 	LicenceKey     string                 `json:"licenseKey"`
 	ClientSecret   string                 `json:"client_secret"`
-	ClientId       string                 `json:"client_id"`
-	AccessTokenUri string                 `json:"access_token_uri"`
+	ClientID       string                 `json:"client_id"`
+	AccessTokenURI string                 `json:"access_token_uri"`
 	Hostname       string                 `json:"hostname"`
 	Username       string                 `json:"username"`
 	Password       string                 `json:"password"`
-	Port           json.Number            `json:"port"`
 	Name           string                 `json:"name"`
 	Additional     map[string]interface{} `json:"-"`
+	Port           json.Number            `json:"port"`
 }
 
 type _cred Credentials
@@ -91,14 +91,14 @@ func getServicesFromEnvironment() string {
 	return os.Getenv(VCAPServices)
 }
 
-// MissingServiceError is the error when the service does not exist in provided slice of services.
-var MissingServiceError = errors.New("service does not exist")
+// ErrMissingService is the error when the service does not exist in provided slice of services.
+var ErrMissingService = errors.New("service does not exist")
 
 // GetServiceCredentials retrieves the credentials for the specified service from the provided services.
 func GetServiceCredentials(services map[string][]Service, serviceName string) (*ServiceCredentials, error) {
 	service := services[serviceName]
 	if service == nil {
-		return nil, MissingServiceError
+		return nil, ErrMissingService
 	}
 	if len(service) == 0 {
 		return nil, fmt.Errorf("%s has no data", serviceName)
