@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Piszmog/cfservices"
 	"log"
+
+	"github.com/Piszmog/cfservices/v2"
 )
 
 func main() {
@@ -12,7 +13,7 @@ func main() {
 			{
 				Name: "Service A",
 				Credentials: cfservices.Credentials{
-					Uri: "example_uri",
+					URI: "example_uri",
 				},
 			},
 		},

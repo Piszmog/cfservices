@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Piszmog/cfservices"
 	"os"
+
+	"github.com/Piszmog/cfservices/v2"
 )
 
 func main() {
