@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/Piszmog/cfservices/v2"
@@ -9,7 +10,7 @@ import (
 
 func main() {
 	// Manually setting env variable to illustrate usage
-	os.Setenv("VCAP_SERVICES", `{
+	err := os.Setenv("VCAP_SERVICES", `{
       "serviceA": [
         {
           "name":"service_a",
@@ -19,7 +20,14 @@ func main() {
         }
       ]
     }`)
-	defer os.Unsetenv("VCAP_SERVICES")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err = os.Unsetenv("VCAP_SERVICES"); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	services, err := cfservices.GetServices()
 	if err != nil {
