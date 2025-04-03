@@ -27,19 +27,19 @@ type Service struct {
 
 // Credentials is the credentials of a single bounded services.
 type Credentials struct {
-	URI            string                 `json:"uri"`
-	JDBCUrl        string                 `json:"jdbcUrl"`
-	APIUri         string                 `json:"http_api_uri"`
-	LicenceKey     string                 `json:"licenseKey"`
-	ClientSecret   string                 `json:"client_secret"`
-	ClientID       string                 `json:"client_id"`
-	AccessTokenURI string                 `json:"access_token_uri"`
-	Hostname       string                 `json:"hostname"`
-	Username       string                 `json:"username"`
-	Password       string                 `json:"password"`
-	Name           string                 `json:"name"`
-	Additional     map[string]interface{} `json:"-"`
-	Port           json.Number            `json:"port"`
+	URI            string         `json:"uri"`
+	JDBCUrl        string         `json:"jdbcUrl"`
+	APIUri         string         `json:"http_api_uri"`
+	LicenceKey     string         `json:"licenseKey"`
+	ClientSecret   string         `json:"client_secret"`
+	ClientID       string         `json:"client_id"`
+	AccessTokenURI string         `json:"access_token_uri"`
+	Hostname       string         `json:"hostname"`
+	Username       string         `json:"username"`
+	Password       string         `json:"password"`
+	Name           string         `json:"name"`
+	Additional     map[string]any `json:"-"`
+	Port           json.Number    `json:"port"`
 }
 
 type _cred Credentials
@@ -50,7 +50,7 @@ func (c *Credentials) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	*c = Credentials(cred)
-	var additional map[string]interface{}
+	var additional map[string]any
 	if err := json.Unmarshal(b, &additional); err != nil {
 		return err
 	}
